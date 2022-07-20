@@ -21,7 +21,7 @@ func (d *PresenceDeps) FindAll(ctx context.Context, in ListIn) ([]PresenceList, 
 	query := "select p.id, u.name, p.status, p.created_at from presences as p left join users as u on u.id = p.user_id where p.user_id = $1"
 	rows, err := tx.Query(ctx, query, &in.UserId)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query finadll: %v", err)
+		return nil, fmt.Errorf("failed to query find all: %v", err)
 	}
 
 	var records []PresenceList

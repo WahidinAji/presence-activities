@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"presence-activities/components/activities"
 	"presence-activities/components/presences"
 	"presence-activities/components/users"
 	"presence-activities/pkg"
@@ -35,9 +36,13 @@ func main() {
 	presence := presences.PresenceDeps{DB: conn}
 	presence.PresenceRoutes(app)
 
+	//activites deps
+	activity := activities.ActivityDeps{DB: conn}
+	activity.ActivityRoutes(app)
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
 
-	app.Listen(":8080")
+	app.Listen(":3000")
 }

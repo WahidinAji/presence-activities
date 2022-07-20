@@ -46,6 +46,25 @@ func Migrate(ctx context.Context, db *pgx.Conn) error {
 		return fmt.Errorf(fmt.Sprintf("Failed to migrate presences table: %v", err))
 	}
 	log.Println("Successfully migrated presences table")
+	
+	_, err = tx.Exec(ctx, `
+		create table if not exists activities(
+			id bigserial primary key,
+			user_id bigserial not null,
+			status char(20) not null default 'in_progress',
+			title varchar(255) not null,
+			description text not null,
+			created_at timestamp default current_timestamp,
+			updated_at timestamp default current_timestamp,
+			CONSTRAINT fk_user
+				FOREIGN key (user_id)
+					REFERENCES users(id)
+		);
+	`)
+	if err != nil {
+		return fmt.Errorf(fmt.Sprintf("Failed to migrate activities table: %v", err))
+	}
+	log.Println("Successfully migrated activities table")
 
 	err = tx.Commit(ctx)
 	if err != nil {
