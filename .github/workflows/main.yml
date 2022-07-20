@@ -10,5 +10,3 @@ jobs:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master
         - run: flyctl deploy --remote-only
-          with:
-            args: "deploy --build-arg CERT_URL=${{ secrets.CERT_URL }}"
