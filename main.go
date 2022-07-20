@@ -12,9 +12,8 @@ import (
 )
 
 func main() {
-	
-	app := fiber.New()
 
+	app := fiber.New()
 	ctx := context.Background()
 
 	conn, err := pgx.Connect(ctx, pkg.PG_URL)
