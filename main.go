@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"presence-activities/components/presences"
+	"presence-activities/components/users"
 	"presence-activities/pkg"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,6 +27,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	//users deps
+	user := users.UserDeps{DB: conn}
+	user.UserRoutes(app)
+
+	//presences deps
 	presence := presences.PresenceDeps{DB: conn}
 	presence.PresenceRoutes(app)
 
