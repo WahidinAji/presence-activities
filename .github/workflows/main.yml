@@ -11,7 +11,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
-        - uses: superfly/flyctl-actions@1.1
+        - uses: superfly/flyctl-actions/setup-flyctl@master
+        - run: "deploy"
+
           with:
             args: "deploy --build-arg CERT_URL=${{ secrets.CERT_URL }}"
         # - run: flyctl deploy --remote-only
