@@ -39,5 +39,5 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
-	log.Fatal(app.Listen(":8080"))
+	app.Listen(":8080")
 }
