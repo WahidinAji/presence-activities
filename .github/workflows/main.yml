@@ -14,4 +14,4 @@ jobs:
         - uses: superfly/flyctl-actions@1.1
           # with:
           #   args: "deploy --build-arg CERT_URL=${{ secrets.CERT_URL }}"
-        - run: flyctl deploy --remote-only
+        - run: flyctl deploy
