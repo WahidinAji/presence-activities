@@ -31,23 +31,16 @@ func Migrate(ctx context.Context, db *pgx.Conn) error {
 	log.Println("Successfully migrated users table")
 
 	_, err = tx.Exec(ctx, `
-		DO $$
-		BEGIN
-			IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'presence_status') THEN
-				CREATE TYPE presence_status AS ENUM ('check_in','check_out');
-			END IF;
-			--more types here...
-			create table if not exists presences(
-				id bigserial primary key,
-				user_id bigserial not null,
-				status presence_status default 'check_in',
-				created_at timestamp default current_timestamp,
-				updated_at timestamp default current_timestamp,
-				CONSTRAINT fk_user
-					FOREIGN key (user_id)
-						REFERENCES users(id)
-			);
-		END$$;
+		create table if not exists presences(
+			id bigserial primary key,
+			user_id bigserial not null,
+			status char(20) not null default 'check_in',
+			created_at timestamp default current_timestamp,
+			updated_at timestamp default current_timestamp,
+			CONSTRAINT fk_user
+				FOREIGN key (user_id)
+					REFERENCES users(id)
+		);
 	`)
 	if err != nil {
 		return fmt.Errorf(fmt.Sprintf("Failed to migrate presences table: %v", err))
