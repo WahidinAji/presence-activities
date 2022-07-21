@@ -41,7 +41,7 @@ func main() {
 	activity.ActivityRoutes(app)
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
+		return c.SendString("Hello, World! BY AJI")
 	})
 
 	app.Listen(":8080")
