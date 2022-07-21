@@ -1,7 +1,6 @@
-# fly.toml file generated for go-jwt on 2022-02-02T12:42:50+07:00
+# fly.toml file generated for presence-activities on 2022-07-21T14:00:28+07:00
 
 app = "presence-activities"
-
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -18,13 +17,13 @@ processes = []
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
-
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
     type = "connections"
 
   [[services.ports]]
+    force_https = true
     handlers = ["http"]
     port = 80
 
