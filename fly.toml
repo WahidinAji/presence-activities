@@ -1,6 +1,6 @@
-# fly.toml file generated for presence-activities on 2022-07-21T14:00:28+07:00
+# fly.toml file generated for presences on 2022-07-21T14:16:08+07:00
 
-app = "presence-activities"
+app = "presences"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
