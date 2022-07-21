@@ -5,7 +5,8 @@ ARG CERT_URL
 
 WORKDIR /usr/app
 
-RUN curl --create-dirs -o ./.postgresql/root.crt -O ${CERT_URL}
+# RUN curl --create-dirs -o ./.postgresql/root.crt -O ${CERT_URL}
+RUN curl --create-dirs -o $HOME/.postgresql/root.crt -O ${CERT_URL}
 
 COPY . .
 
