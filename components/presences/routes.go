@@ -9,6 +9,9 @@ import (
 
 func (d *PresenceDeps) PresenceRoutes(app *fiber.App) {
 	api := app.Group("/api/presences", logger.New())
-	api.Get("/", middleware.Protected(), d.GetAll)
-	api.Post("/", middleware.Protected(), d.Presence)
+	api.Use(middleware.IsAuth)
+	api.Get("/", d.GetAll)
+	api.Post("/", d.Presence)
+	// api.Get("/", middleware.Protected(), d.GetAll)
+	// api.Post("/", middleware.Protected(), d.Presence)
 }

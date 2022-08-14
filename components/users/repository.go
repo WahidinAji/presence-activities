@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/jackc/pgx/v4"
@@ -17,7 +18,15 @@ func (d *UserDeps) LoginRepo(ctx context.Context, in LoginIn) (*LoginOut, error)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start transaction: %w", err)
 	}
-	defer tx.Rollback(ctx)
+	defer func() {
+		rollbackErr := tx.Rollback(ctx)
+		if rollbackErr != nil && !errors.Is(rollbackErr, pgx.ErrTxClosed) {
+			err = rollbackErr
+		}
+		return
+	}()
+
+	// defer tx.Rollback(ctx)
 
 	//check user
 	var authenticate bool
@@ -84,4 +93,33 @@ func (d *UserDeps) RegisterRepo(ctx context.Context, in RegisIn) (*RegisOut, err
 		return nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 	return &out, nil
+}
+
+func (d *UserDeps) SignOutRepo(ctx context.Context, in LoginOut) (bool, error) {
+	if err := d.DB.Ping(ctx); err != nil {
+		return false, fmt.Errorf("Connection error: %w", err)
+	}
+
+	tx, err := d.DB.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return false, fmt.Errorf("failed to start transaction: %w", err)
+	}
+	defer func() {
+		rollbackErr := tx.Rollback(ctx)
+		if rollbackErr != nil && !errors.Is(rollbackErr, pgx.ErrTxClosed) {
+			err = rollbackErr
+			return
+		}
+	}()
+	//check user
+	var authenticate bool
+	query := "select exists(select name from users where email=$1)"
+	tx.QueryRow(ctx, query, &in.Email).Scan(&authenticate)
+	if !authenticate {
+		return false, fmt.Errorf("user not found")
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return false, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	return true, nil
 }

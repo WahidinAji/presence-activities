@@ -9,6 +9,9 @@ import (
 
 func (d *ActivityDeps) ActivityRoutes(app *fiber.App) {
 	api := app.Group("/api/activities", logger.New())
-	api.Get("/", middleware.Protected(), d.GetAll)
-	api.Post("/", middleware.Protected(), d.Create)
+	api.Use(middleware.IsAuth)
+	api.Get("/", d.GetAll)
+	api.Post("/", d.Create)
+	// api.Get("/", middleware.Protected(), d.GetAll)
+	// api.Post("/", middleware.Protected(), d.Create)
 }

@@ -39,3 +39,7 @@ func (d *ActivityDeps) GetAll(c *fiber.Ctx) error {
 	}
 	return c.Status(200).JSON(fiber.Map{"data": res})
 }
+
+// func (d *ActivityDeps) GetByDate(ctx *fiber.Ctx) error {
+	
+// }
