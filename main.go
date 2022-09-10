@@ -32,13 +32,13 @@ func main() {
 	}
 
 	//https
-	
+
 	//set cors
 	app.Use(cors.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders:  "Origin, Content-Type, Accept,Bearer",
-		AllowMethods:     "GET, POST, PATCH, PUT, DELETE",
+		AllowHeaders: "Origin, Content-Type, Accept,Bearer",
+		AllowMethods: "GET, POST, PATCH, PUT, DELETE",
 	}))
 
 	//users deps
@@ -49,7 +49,7 @@ func main() {
 	presence := presences.PresenceDeps{DB: conn}
 	presence.PresenceRoutes(app)
 
-	//activites deps
+	//activities deps
 	activity := activities.ActivityDeps{DB: conn}
 	activity.ActivityRoutes(app)
 

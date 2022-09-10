@@ -1,6 +1,6 @@
 
 # TODO
-* `Logout service`
+* `Logout service` -> `done`
 * `View activities by date`
 * `View presences by date`
 * `Complete the request documentation`
@@ -19,7 +19,7 @@ http://127.0.0.1:3000/api/users/register
 {
     "name" : "Your Name",
     "email" : "your.email@mail.com",
-    "password" : "yourpassword",
+    "password" : "yourpassword"
 }
 ```
 
@@ -35,7 +35,7 @@ http://127.0.0.1:3000/api/users/login
 ```json
 {
     "email" : "your.email@mail.com",
-    "password" : "yourpassword",
+    "password" : "yourpassword"
 }
 ```
 
@@ -44,14 +44,14 @@ http://127.0.0.1:3000/api/users/login
 `Bearer Token : <token>`
 * url
 ```http
-http://127.0.0.1:3000/api/users/login
+http://127.0.0.1:3000/api/users/logout
 ```
 * method
 `POST`
 * body
 ```json
 {
-    "user_id" : "your.email@mail.com",
+    "user_id" : "your.email@mail.com"
 }
 ```
 
@@ -70,7 +70,7 @@ http://127.0.0.1:3000/api/presences
 ```json
 {
     "user_id" : "your.email@mail.com",
-    "status" : "check_in | check_out",
+    "status" : "check_in | check_out"
 }
 ```
 
