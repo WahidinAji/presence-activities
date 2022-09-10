@@ -13,7 +13,12 @@ func Migrate(ctx context.Context, db *pgx.Conn) error {
 	if err != nil {
 		return fmt.Errorf(fmt.Sprintf("Failed to start transaction db: %v", err))
 	}
-	defer tx.Rollback(ctx)
+	defer func() {
+		errRoll := tx.Rollback(ctx)
+		if errRoll != nil {
+			log.Printf("error rolback %v", errRoll)
+		}
+	}()
 
 	_, err = tx.Exec(ctx, `
 		create table if not exists users(
@@ -46,7 +51,7 @@ func Migrate(ctx context.Context, db *pgx.Conn) error {
 		return fmt.Errorf(fmt.Sprintf("Failed to migrate presences table: %v", err))
 	}
 	log.Println("Successfully migrated presences table")
-	
+
 	_, err = tx.Exec(ctx, `
 		create table if not exists activities(
 			id bigserial primary key,

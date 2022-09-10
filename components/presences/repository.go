@@ -3,6 +3,7 @@ package presences
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/jackc/pgx/v4"
@@ -10,13 +11,18 @@ import (
 
 func (d *PresenceDeps) FindAll(ctx context.Context, in ListIn) ([]PresenceList, error) {
 	if err := d.DB.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("Connection error: %w", err)
+		return nil, fmt.Errorf("connection error: %w", err)
 	}
 	tx, err := d.DB.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to start transaction: %v", err)
 	}
-	defer tx.Rollback(ctx)
+	defer func() {
+		errRoll := tx.Rollback(ctx)
+		if errRoll != nil {
+			log.Printf("error rollback %v", errRoll)
+		}
+	}()
 
 	query := "select p.id, u.name, p.status, p.created_at from presences as p left join users as u on u.id = p.user_id where p.user_id = $1"
 	rows, err := tx.Query(ctx, query, &in.UserId)
@@ -40,14 +46,19 @@ func (d *PresenceDeps) FindAll(ctx context.Context, in ListIn) ([]PresenceList, 
 
 func (d *PresenceDeps) PresenceRepo(ctx context.Context, in PresenceIn) (*PresenceOut, error) {
 	if err := d.DB.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("Connection error: %w", err)
+		return nil, fmt.Errorf("connection error: %w", err)
 	}
 
 	tx, err := d.DB.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to start transaction: %v", err)
 	}
-	defer tx.Rollback(ctx)
+	defer func() {
+		errRoll := tx.Rollback(ctx)
+		if errRoll != nil {
+			log.Printf("error rollback %v", errRoll)
+		}
+	}()
 
 	status := strings.Replace(in.Status, "_", " ", 1)
 	var exists bool
@@ -55,7 +66,7 @@ func (d *PresenceDeps) PresenceRepo(ctx context.Context, in PresenceIn) (*Presen
 	row := tx.QueryRow(ctx, query, &in.UserId, &in.Status)
 
 	if err := row.Scan(&exists); err != nil {
-		return nil, fmt.Errorf("Error scanning check existing row: %v", err)
+		return nil, fmt.Errorf("error scanning check existing row: %v", err)
 	}
 	if exists {
 		return nil, fmt.Errorf(fmt.Sprint("You already ", status))
